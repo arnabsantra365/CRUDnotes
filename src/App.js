@@ -1,25 +1,134 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState} from 'react'
 
-function App() {
+import Modal from './components/Modal'
+import NoteList from './components/NoteList';
+// import Navbar from './components/Navbar';
+import "./App.css"
+
+
+export default function App() {
+  // const [mode, setMode] = useState('gray-800');
+  // const toggle = () => {
+  //   if (mode === 'gray-800')
+  //     setMode('slate-400');
+  //   else
+  //     setMode('gray-800');
+  // }
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const [notes, setNotes] = useState(getNotesFromLs);
+  const [editid, setEditid] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [setitle,setSetitle]=useState("");
+  const [sedesc,setSedesc]=useState("");
+  const notesPerPage = 6;
+  localStorage.setItem("values", JSON.stringify(notes));
+  // console.log(notes);
+  // useEffect(() => {
+  //   const savedNotes = JSON.parse(localStorage.getItem('notes') || '[]');
+  //   setNotes(savedNotes);
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem('notes', JSON.stringify(notes));
+  // }, [notes]);
+  // console.log(notes,"here");
+  
+  const removeNote = (id) => {
+    // const newVal = notes.filter((elem) => {
+      // if (elem.id !== id) {
+      //   return elem;
+      // }
+      const updatedNotes = notes.filter((note) => note.id !== id);
+
+    // })
+    setNotes(updatedNotes);
+
+   
+  }
+  const editNote = (id) => {
+    setShowModal(true);
+    notes.filter((elem) => {
+      if (elem.id === id) {
+        console.log(elem.title,elem.desc)
+        setSetitle(elem.title);
+        setSedesc(elem.desc);
+        
+      }
+    })
+    // editid(id)
+    setEditid(id)
+    
+  }
+  const changeEdited=()=>{
+    const updatedNotes=notes.map((elem)=>{
+      if(editid===elem.id){
+        return({...elem,title:document.getElementById("edittitle").value,
+        desc:document.getElementById("editdesc").value})
+      }
+      else{
+        return elem;
+      }
+    })
+    console.log(updatedNotes);
+    setNotes(updatedNotes);
+    setShowModal(false);
+  }
+  const indexOfLastNote = currentPage * notesPerPage;
+  const indexOfFirstNote = indexOfLastNote - notesPerPage;
+  const currentNotes = notes.slice(indexOfFirstNote, indexOfLastNote);
+  console.log(currentNotes);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <>
+      {/* <NoteForm title={title} stitle={setTitle} desc={desc} sdesc={setDesc} /> */}
+      {/* <Navbar mode={mode} toggle={toggle}/> */}
 
-export default App;
+
+      <div className="mt-6">
+        <Modal title={title} stitle={setTitle} desc={desc} sdesc={setDesc} notes={currentNotes} snotes={setNotes} />
+        <h1 className="mb-3 text-2xl italic font-mono text-center mt-10">YOUR NOTES:-</h1>
+        {notes.length === 0 ?
+          <div className="max-w-sm p-6  border flex justify-center rounded-lg shadow note">
+
+            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">Oopsss    :-( </h5>
+
+            <p className="mb-3 text-xl  ">You dont have any note yet.Create a new one.</p>
+          </div>
+          : <div className="note  flex justify-evenly ">
+          {currentNotes.map((element) => {
+            return (<NoteList element={element} key={element.id} notes={currentNotes} setNotes={setNotes} editid={editid} sedit={setEditid} 
+              removeNote={removeNote} editNote={editNote} changeEdited={changeEdited} setitle={setitle}sedesc={sedesc}setSetitle={setSetitle}
+              setSedesc={setSedesc} showModal={showModal} setShowModal={setShowModal}/>)
+          })}
+        </div>
+        }
+      </div>
+      <div className="pagination">
+        {Array.from({ length: Math.ceil(notes.length / notesPerPage) }).map(
+          (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={currentPage === index + 1 ? 'active' : ''}
+            >
+              {index + 1}
+            </button>
+          )
+        )}
+      </div>
+    </>
+  )
+  function getNotesFromLs() {
+    const savedNotes = JSON.parse(localStorage.getItem('values'));
+    if(savedNotes){
+      return savedNotes
+    }
+    else{
+      return [];
+    }
+  }
+    
+  // 
+ 
+}
