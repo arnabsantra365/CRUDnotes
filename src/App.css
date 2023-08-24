@@ -43,7 +43,7 @@ body {
   background-size: cover;
   font-family: "Montserrat";
 }
-.note {
+#notes {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;

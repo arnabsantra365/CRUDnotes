@@ -24,16 +24,6 @@ export default function App() {
   const [sedesc,setSedesc]=useState("");
   const notesPerPage = 6;
   localStorage.setItem("values", JSON.stringify(notes));
-  // console.log(notes);
-  // useEffect(() => {
-  //   const savedNotes = JSON.parse(localStorage.getItem('notes') || '[]');
-  //   setNotes(savedNotes);
-  // }, []);
-
-  // useEffect(() => {
-  //   localStorage.setItem('notes', JSON.stringify(notes));
-  // }, [notes]);
-  // console.log(notes,"here");
   
   const removeNote = (id) => {
     // const newVal = notes.filter((elem) => {
@@ -89,13 +79,13 @@ export default function App() {
         <Modal title={title} stitle={setTitle} desc={desc} sdesc={setDesc} notes={currentNotes} snotes={setNotes} />
         <h1 className="mb-3 text-2xl italic font-mono text-center mt-10">YOUR NOTES:-</h1>
         {notes.length === 0 ?
-          <div className="max-w-sm p-6  border flex justify-center rounded-lg shadow note">
+          <div className="max-w-sm p-6  border flex justify-center rounded-lg shadow " id="notes">
 
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">Oopsss    :-( </h5>
 
             <p className="mb-3 text-xl  ">You dont have any note yet.Create a new one.</p>
           </div>
-          : <div className="note  flex justify-evenly ">
+          : <div className=" flex justify-evenly "  id="notes">
           {currentNotes.map((element) => {
             return (<NoteList element={element} key={element.id} notes={currentNotes} setNotes={setNotes} editid={editid} sedit={setEditid} 
               removeNote={removeNote} editNote={editNote} changeEdited={changeEdited} setitle={setitle}sedesc={sedesc}setSetitle={setSetitle}
